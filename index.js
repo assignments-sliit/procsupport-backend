@@ -7,13 +7,11 @@ const cors = require("cors");
 const { getDbConnection } = require("./db/DatabaseConnection");
 const DB_CONNECTION_OK = require("./constants/database.constants");
 
-
-const userRoutes = require("./components/auth/routes/userRoutes")
-const budgetRoutes = require("./components/budget/routes/budgetRoute")
-
+const userRoutes = require("./components/auth/routes/userRoutes");
+const budgetRoutes = require("./components/budget/routes/budgetRoute");
 
 app.use(cors());
-app.use(express.json())
+app.use(express.json());
 
 app.all((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -28,19 +26,17 @@ app.all((req, res, next) => {
   next();
 });
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-app.use("/api/users",userRoutes)
-app.use("/api/budget", budgetRoutes)
-
+app.use("/api/users", userRoutes);
+app.use("/api/budget", budgetRoutes);
 
 app.listen(PORT, () => {
   console.log(`Backend server has Started on port ${PORT}`);
 });
 
-getDbConnection().then(()=>{
+getDbConnection().then(() => {
   console.log(DB_CONNECTION_OK);
-})
+});
