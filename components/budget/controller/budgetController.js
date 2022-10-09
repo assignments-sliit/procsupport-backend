@@ -12,7 +12,7 @@ exports.createBudget = (req, res) => {
     .then((result) => {
       res.status(201).json({
         message: "Budget created",
-        createdUser: result,
+        createdBudget: result,
         code: "BUDGET_CREATED",
       });
     })

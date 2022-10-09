@@ -9,11 +9,11 @@ const MaterialRequirementSchema = new Schema({
         required:true,
     },
     material:{
-        type:mongoose.Types.ObjectId,
-        ref:'Materials'
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Material'
     },
     materialType:{
-        type:mongoose.Types.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:'Material Type'
     },
     qty:{
@@ -38,4 +38,4 @@ const MaterialRequirementSchema = new Schema({
 
 })
 
-module.exports = mongoose.Schema("Material Requirement", MaterialRequirementSchema)
+module.exports = mongoose.model("Material Requirement", MaterialRequirementSchema)

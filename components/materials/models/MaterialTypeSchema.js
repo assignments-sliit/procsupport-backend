@@ -12,4 +12,4 @@ const MaterialTypeSchema = new Schema({
     
 })
 
-module.exports = mongoose.Schema("Material Type",MaterialTypeSchema)
+module.exports = mongoose.model("Material Type",MaterialTypeSchema)

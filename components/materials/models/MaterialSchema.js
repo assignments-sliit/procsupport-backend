@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const MaterialSchema = new Schema({
   _id: mongoose.Types.ObjectId,
@@ -22,9 +22,15 @@ const MaterialSchema = new Schema({
     required: true,
   },
   unitPrice: {
-    type: String,
+    type: Number,
     required: true,
   },
+  unitPriceCurrency:{
+    type: String,
+    required: true,
+    default:"LKR"
+  }
 });
 
-module.exports = mongoose.Schema("Material", MaterialSchema);
+
+module.exports = mongoose.model('Material',MaterialSchema);

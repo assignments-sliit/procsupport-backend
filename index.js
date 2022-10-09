@@ -7,8 +7,10 @@ const cors = require("cors");
 const { getDbConnection } = require("./db/DatabaseConnection");
 const DB_CONNECTION_OK = require("./constants/database.constants");
 
+//routes
 const userRoutes = require("./components/auth/routes/userRoutes");
 const budgetRoutes = require("./components/budget/routes/budgetRoute");
+const materialRoutes = require("./components/materials/routes/materialRoutes")
 
 app.use(cors());
 app.use(express.json());
@@ -32,6 +34,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/budget", budgetRoutes);
+app.use("/api/material",materialRoutes)
 
 app.listen(PORT, () => {
   console.log(`Backend server has Started on port ${PORT}`);
