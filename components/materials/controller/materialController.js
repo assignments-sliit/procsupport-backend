@@ -76,7 +76,7 @@ exports.removeQtyToMaterial = (req, res) => {
       .then((updatedDoc) => {
         res.status(200).json({
           updatedDocument: updatedDoc,
-          message: "Material Quantity Incresed",
+          message: "Material Quantity Decreased",
           code: "QUANTITY_DECREASED",
         });
       });
