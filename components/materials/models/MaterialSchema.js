@@ -4,6 +4,11 @@ const { Schema } = mongoose;
 
 const MaterialSchema = new Schema({
   _id: mongoose.Types.ObjectId,
+  materialId:{
+    type: String,
+    required: true,
+    unique:true
+  },
   materialType: {
     type: String,
     required: true,
