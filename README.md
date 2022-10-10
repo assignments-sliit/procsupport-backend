@@ -79,7 +79,7 @@ API Documentation for ProcSupport - Procurement System for ESAD Module
 ## End-point: Add Material
 ### Method: POST
 >```
->{{baseUrl}}/api/material/add
+>localhost:5000/api/material/add
 >```
 ### Body (**raw**)
 
@@ -89,6 +89,40 @@ API Documentation for ProcSupport - Procurement System for ESAD Module
     "materialName":"Holcim Cement",
     "uom":"kg",
     "unitPrice":2500
+}
+```
+
+
+⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
+
+## End-point: Add Quantity to Material
+### Method: PATCH
+>```
+>localhost:5000/api/material/qty/add
+>```
+### Body (**raw**)
+
+```json
+{
+    "materialId":"MAT14377",
+    "qty":5
+}
+```
+
+
+⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
+
+## End-point: Remove Quantity from Material
+### Method: PATCH
+>```
+>localhost:5000/api/material/qty/remove
+>```
+### Body (**raw**)
+
+```json
+{
+    "materialId":"MAT14377",
+    "qty":2
 }
 ```
 
