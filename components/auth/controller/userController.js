@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcryptjs')
 
 const Users = require("../models/UserSchema");
 
@@ -17,25 +18,37 @@ exports.createUser = (req, res, next) => {
           code: "USER_EXISTS",
         });
       } else {
-        const id = mongoose.Types.ObjectId();
-        req.body._id = id;
-        const newUser = new User(req.body);
 
-        newUser
-          .save()
-          .then((result) => {
-            res.status(201).json({
-              message: "User created",
-              createdUser: result,
-              code: "USER_CREATED",
-            });
-          })
-          .catch((err) => {
-            res.status(500).json({
-              error: err,
-              code: "UNKNOWN_ERROR",
-            });
-          });
+        bcrypt.hash(req.body.password,10,(err,hash)=>{
+          if(err)
+      {      return res.status(500).json({
+              error:err,
+              code:"UNKNOWN_ERROR"
+            })}else{
+              const id = mongoose.Types.ObjectId();
+              req.body._id = id;
+              req.body.password = hash;
+              const newUser = new Users(req.body);
+      
+              newUser
+                .save()
+                .then((result) => {
+                  res.status(201).json({
+                    message: "User created",
+                    createdUser: result,
+                    code: "USER_CREATED",
+                  });
+                })
+                .catch((err) => {
+                  res.status(500).json({
+                    error: err,
+                    code: "UNKNOWN_ERROR",
+                  });
+                });
+            }
+
+        })
+       
       }
     });
 };
@@ -70,3 +83,18 @@ exports.getUserByUsername = (req, res) => {
       });
     });
 };
+
+exports.login = (req,res)=>{
+  const {username,password} = req.body;
+
+  Users.findOne({
+    username:username
+  }).exec().then((foundUser)=>{
+    if(foundUser){
+      bcrypt.compare(password,foundUser.password,(err,result)=>{
+        
+      })
+    }
+  })
+
+}
