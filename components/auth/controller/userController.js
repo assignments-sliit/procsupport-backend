@@ -114,7 +114,7 @@ exports.login = (req, res) => {
                 expiresIn: "24h",
               }
             );
-            console.log(student);
+           
             return res.status(200).json({
               message: "Authorization Success",
               token: token,

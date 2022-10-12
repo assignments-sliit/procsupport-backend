@@ -10,6 +10,7 @@ routes.post("/create",userController.createUser)
 routes.get('/find/username/:username',userController.getUserByUsername)
 
 //routes.get('/login')
+routes.get('/login',userController.login)
 
 
 module.exports = routes;
