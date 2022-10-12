@@ -114,7 +114,7 @@ exports.login = (req, res) => {
                 expiresIn: "24h",
               }
             );
-           
+
             return res.status(200).json({
               message: "Authorization Success",
               token: token,
@@ -139,17 +139,78 @@ exports.login = (req, res) => {
 
 exports.deleteUser = (req, res) => {
   Users.deleteOne({
-    username:req.body.username
-  }).then((deleted)=>{
-    res.status(200).json({
-      message:"User Deleted",
-      code:"USER_DELETED"
-    })
-  }).catch((err)=>{
-    res.status(500).json({
-      error:err,
-      code:"UNKNOWN_ERROR"
-    })
+    username: req.body.username,
   })
+    .then((deleted) => {
+      res.status(200).json({
+        message: "User Deleted",
+        code: "USER_DELETED",
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: err,
+        code: "UNKNOWN_ERROR",
+      });
+    });
 };
 
+exports.getUserType = (req, res) => {
+  Users.findOne({
+    username: req.params.username,
+  })
+    .exec()
+    .then((foundUser) => {
+      if (foundUser) {
+        res.status(200).json({
+          message: "User type",
+          usertype: foundUser.usertype.toString().toUpperCase(),
+          code: "USER_TYPE",
+        });
+      }
+    });
+};
+
+exports.getUserTypeFromToken = (req, res) => {
+  const token = req.body.token;
+
+  if (token) {
+    const json = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString()
+    );
+
+    Object.entries(json).map((entry) => {
+      if (entry[0] == "usertype") {
+        res.status(200).json({
+          message: "User type",
+          json: entry[1],
+          code: "USER_TYPE",
+        });
+      }
+    });
+  }
+};
+
+exports.checkUserType = (req, res) => {
+  const { username, usertype } = req.body;
+  Users.findOne({
+    username: username,
+  })
+    .exec()
+    .then((foundUser) => {
+      if (foundUser) {
+        if (foundUser.usertype == usertype.toString().toUpperCase()) {
+          res.status(200).json({
+            message: "User type matches",
+            usertype: foundUser.usertype.toString().toUpperCase(),
+            code: "USER_TYPE_MATCH",
+          });
+        } else {
+          res.status(401).json({
+            message: "User type mismatch",
+            code: "USER_TYPE_MISMATCH",
+          });
+        }
+      }
+    });
+};
