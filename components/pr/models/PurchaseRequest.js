@@ -44,4 +44,4 @@ const PurchaseRequestSchema = new Schema({
     }
 })
 
-module.exports = mongoose.Schema("Purchase Request", PurchaseRequestSchema)
+module.exports = mongoose.model("Purchase Request", PurchaseRequestSchema)
