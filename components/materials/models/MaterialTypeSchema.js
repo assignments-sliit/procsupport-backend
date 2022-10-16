@@ -7,7 +7,8 @@ const MaterialTypeSchema = new Schema({
     _id: mongoose.Types.ObjectId,
     materialType:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     }
     
 })

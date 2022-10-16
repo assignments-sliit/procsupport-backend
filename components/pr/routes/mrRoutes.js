@@ -3,12 +3,14 @@ const routes = express.Router();
 
 const prController = require("../controllers/purchaseRequestController");
 
-//create purchase request
+//add material requirement to PR
 routes.post(
-  "/create",
+  "/add",
+  prController.checkMaterial,
+  prController.checkMaterialType,
   prController.checkPrExists,
-  prController.checkUserAndAccess,
-  prController.createPurchaseRequest
+  prController.addMaterialRequirement,
+  prController.addMrToPr
 );
 
 module.exports = routes;

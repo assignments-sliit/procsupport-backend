@@ -9,15 +9,19 @@ const MaterialRequirementSchema = new Schema({
         required:true,
     },
     material:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Material'
+        type:String,
+        required: true
     },
     materialType:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Material Type'
+        type:String,
+        required:true
     },
     qty:{
         type:Number,
+        required:true,
+    },
+    qtyUom:{
+        type:String,
         required:true,
     },
     totalAmount:{

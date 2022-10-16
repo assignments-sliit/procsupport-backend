@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const PurchaseRequest = require("../models/PurchaseRequest");
+const Material = require("../../materials/models/MaterialSchema");
+const MaterialType = require("../../materials/models/MaterialTypeSchema");
+const MaterialRequirement = require("../models/MaterialRequirement");
 
 exports.checkPrExists = (req, res, next) => {
   const prid = "PR" + Math.floor(Math.random() * 50000);
@@ -36,10 +39,8 @@ exports.checkUserAndAccess = (req, res, next) => {
 
       if (entry[0] == "usertype" && entry[1] == "REQUESTOR") {
         next();
-      } 
+      }
     });
-
-
   }
 };
 
@@ -69,4 +70,76 @@ exports.createPurchaseRequest = (req, res) => {
         code: "UNKNOWN_ERROR",
       });
     });
+};
+
+exports.checkMaterial = (req, res, next) => {
+  const material = req.body.materialId;
+
+  Material.findOne({
+    materialId: material,
+  })
+    .exec()
+    .then((foundMaterial) => {
+      if (foundMaterial) {
+        req.body.material = foundMaterial.materialId;
+        next();
+      } else {
+        res.status(404).json({
+          error: "Material does not exist",
+          code: "MATERIAL_DOES_NOT_EXIST",
+        });
+      }
+    });
+};
+
+exports.checkMaterialType = (req, res,next) => {
+  const materialType = req.body.materialTypeId;
+
+  MaterialType.findOne({
+    materialId: materialType,
+  })
+    .exec()
+    .then((foundMaterialType) => {
+      if (foundMaterialType) {
+        req.body.materialType = foundMaterialType.materialType;
+        next();
+      } else {
+        res.status(404).json({
+          error: "Material does not exist",
+          code: "MATERIAL_DOES_NOT_EXIST",
+        });
+      }
+    });
+};
+
+exports.addMaterialRequirement = (req, res,next) => {
+  const reqid = "MAR" + +Math.floor(Math.random() * 50000);
+  req.body.reqid = reqid;
+
+  const _id = mongoose.Types.ObjectId()
+  req.body._id = _id;
+
+  const materialRequirement = new MaterialRequirement(req.body);
+
+  materialRequirement.save().then((createdMr) => {
+    req.body.createdMr = createdMr;
+    next();
+  });
+};
+
+exports.addMrToPr = (req, res) => {
+  PurchaseRequest.updateOne(
+    {
+      prid: req.body.prid,
+    },
+    {
+      "$push": { materialRequirement: req.body.createdMr._id },
+    },
+  ).exec().then((updated)=>{
+    res.status(200).json({
+      createdMaterialRequirement:req.body.createdMr,
+      message:"Material Requirement Added",
+      code:"MATERIAL_REQUIREMENT_ADDED"
+    })
+  })
 };

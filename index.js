@@ -12,7 +12,8 @@ const userRoutes = require("./components/auth/routes/userRoutes");
 const budgetRoutes = require("./components/budget/routes/budgetRoute");
 const materialRoutes = require("./components/materials/routes/materialRoutes")
 const prRoutes = require("./components/pr/routes/prRoutes")
-
+const mtRoutes = require("./components/materials/routes/materialTypeRoutes")
+const mrRoutes = require('./components/pr/routes/mrRoutes')
 
 app.use(cors());
 app.use(express.json());
@@ -38,9 +39,11 @@ app.use("/api/users", userRoutes);
 app.use("/api/budget", budgetRoutes);
 app.use("/api/material",materialRoutes)
 app.use("/api/pr",prRoutes)
+app.use('/api/mr',mrRoutes)
+app.use("/api/mt",mtRoutes)
 
 app.listen(PORT, () => {
-  console.log(`Backend server has Started on port ${PORT}`);
+  console.log(`Backend server has started on port ${PORT}`);
 });
 
 getDbConnection().then(() => {

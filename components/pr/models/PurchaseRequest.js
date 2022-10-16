@@ -41,6 +41,10 @@ const PurchaseRequestSchema = new Schema({
         type:mongoose.Types.ObjectId,
         ref:'Users',
         required:true
+    },
+    materialRequirement:{
+        type:[mongoose.Types.ObjectId],
+        ref:'Material Requirement'
     }
 })
 
