@@ -9,8 +9,7 @@ routes.post(
   prController.checkMaterial,
   prController.checkMaterialType,
   prController.checkPrExists,
-  prController.addMaterialRequirement,
-  prController.addMrToPr
+  prController.addMaterialRequirement
 );
 
 module.exports = routes;

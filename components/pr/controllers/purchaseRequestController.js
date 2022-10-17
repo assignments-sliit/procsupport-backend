@@ -122,24 +122,9 @@ exports.addMaterialRequirement = (req, res,next) => {
   const materialRequirement = new MaterialRequirement(req.body);
 
   materialRequirement.save().then((createdMr) => {
-    req.body.createdMr = createdMr;
-    next();
+    res.status(201).json({
+       createdMr: createdMr
+    })
   });
 };
 
-exports.addMrToPr = (req, res) => {
-  PurchaseRequest.updateOne(
-    {
-      prid: req.body.prid,
-    },
-    {
-      "$push": { materialRequirement: req.body.createdMr._id },
-    },
-  ).exec().then((updated)=>{
-    res.status(200).json({
-      createdMaterialRequirement:req.body.createdMr,
-      message:"Material Requirement Added",
-      code:"MATERIAL_REQUIREMENT_ADDED"
-    })
-  })
-};

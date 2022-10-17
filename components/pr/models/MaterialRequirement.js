@@ -39,6 +39,10 @@ const MaterialRequirementSchema = new Schema({
         required:true,
         default:Date.now()
     },
+    prid:{
+        type:String,
+        required:true
+    }
 
 })
 
