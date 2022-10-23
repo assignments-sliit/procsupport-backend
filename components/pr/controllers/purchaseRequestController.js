@@ -4,6 +4,7 @@ const PurchaseRequest = require("../models/PurchaseRequest");
 const Material = require("../../materials/models/MaterialSchema");
 const MaterialType = require("../../materials/models/MaterialTypeSchema");
 const MaterialRequirement = require("../models/MaterialRequirement");
+const { rawListeners } = require("../models/PurchaseRequest");
 
 exports.checkPrExists = (req, res, next) => {
   const prid = "PR" + Math.floor(Math.random() * 50000);
@@ -39,8 +40,20 @@ exports.checkUserAndAccess = (req, res, next) => {
 
       if (entry[0] == "usertype" && entry[1] == "REQUESTOR") {
         next();
+      }else{
+        res.status(409).json({
+          error:"Access Denied",
+          code:"ACCESS_DENIED"
+        })
       }
     });
+  }
+  //cannot find token
+  else{
+    res.status(409).json({
+      error:"Cannot find auth token",
+      code:"AUTH_TOKEN_NOT_FOUND"
+    })
   }
 };
 
@@ -127,4 +140,41 @@ exports.addMaterialRequirement = (req, res,next) => {
     })
   });
 };
+
+exports.approvePr = (req,res,next)=>{
+  const token = req.body.token;
+
+  if (token) {
+    const json = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString()
+    );
+
+    Object.entries(json).map((entry) => {
+      if (entry[0] == "id") {
+        req.body.createdBy = entry[1].toString();
+      }
+
+      if (entry[0] == "usertype" && entry[1] == "APPROVER") {
+        PurchaseRequest.findOneAndUpdate({
+          status:"APPROVED"
+        }).exec().then((approvedPr)=>{
+          
+        })
+      }else{
+        res.status(409).json({
+          error:"Access Denied",
+          code:"ACCESS_DENIED"
+        })
+      }
+    });
+  }
+  //cannot find token
+  else{
+    res.status(409).json({
+      error:"Cannot find auth token",
+      code:"AUTH_TOKEN_NOT_FOUND"
+    })
+  }
+
+}
 

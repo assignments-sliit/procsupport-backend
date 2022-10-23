@@ -11,4 +11,6 @@ routes.post(
   prController.createPurchaseRequest
 );
 
+routes.put("/status/approve",prController.approvePr)
+
 module.exports = routes;
