@@ -157,10 +157,7 @@ exports.approvePr = (req, res, next) => {
     );
 
     Object.entries(json).map((entry) => {
-      if (entry[0] == "id") {
-        req.body.createdBy = entry[1].toString();
-      }
-
+  
       if (entry[0] == "usertype") {
         usertype = entry[1].toString();
       }

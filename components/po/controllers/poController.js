@@ -4,7 +4,7 @@ const PurchaseOrder = require("../models/PurchaseOrder");
 const PurchaseRequest = require("../../pr/models/PurchaseRequest");
 
 exports.checkPoExists = (req, res, next) => {
-  const poid = "PR" + Math.floor(Math.random() * 50000);
+  const poid = "PO" + Math.floor(Math.random() * 50000);
   PurchaseOrder.findOne({
     poid: poid,
   })
@@ -127,3 +127,105 @@ exports.fetchAllPos = (req, res, next) => {
       }
     });
 };
+
+exports.approvePo = (req,res,next)=>{
+  const token = req.body.token;
+
+  let usertype = "";
+
+  if (token) {
+    const json = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString()
+    );
+
+    Object.entries(json).map((entry) => {
+      if (entry[0] == "usertype") {
+        usertype = entry[1].toString();
+      }
+    });
+
+    if (usertype && usertype == "PURCHASER") {
+      PurchaseOrder.findOneAndUpdate(
+        {
+          poid: req.body.poid,
+        },
+        {
+          status: "APPROVED",
+        }
+      )
+        .exec()
+        .then(() => {
+          PurchaseOrder.findOne({
+            poid: req.body.poid,
+          }).then((approvedPo) => {
+            res.status(200).json({
+              approvedPo: approvedPo,
+            });
+          });
+        });
+    } else {
+      res.status(409).json({
+        error: "Access Denied",
+        code: "ACCESS_DENIED",
+      });
+    }
+  }
+  //cannot find token
+  else {
+    res.status(409).json({
+      error: "Cannot find auth token",
+      code: "AUTH_TOKEN_NOT_FOUND",
+    });
+  }
+}
+
+exports.rejectPo = (req,res,next)=>{
+  const token = req.body.token;
+
+  let usertype = "";
+
+  if (token) {
+    const json = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString()
+    );
+
+    Object.entries(json).map((entry) => {
+      if (entry[0] == "usertype") {
+        usertype = entry[1].toString();
+      }
+    });
+
+    if (usertype && usertype == "PURCHASER") {
+      PurchaseOrder.findOneAndUpdate(
+        {
+          poid: req.body.poid,
+        },
+        {
+          status: "REJECTED",
+        }
+      )
+        .exec()
+        .then(() => {
+          PurchaseOrder.findOne({
+            poid: req.body.poid,
+          }).then((approvedPo) => {
+            res.status(200).json({
+              approvedPo: approvedPo,
+            });
+          });
+        });
+    } else {
+      res.status(409).json({
+        error: "Access Denied",
+        code: "ACCESS_DENIED",
+      });
+    }
+  }
+  //cannot find token
+  else {
+    res.status(409).json({
+      error: "Cannot find auth token",
+      code: "AUTH_TOKEN_NOT_FOUND",
+    });
+  }
+}

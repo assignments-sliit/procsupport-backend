@@ -15,4 +15,10 @@ routes.post(
 //all POs
 routes.get("/all", poController.fetchAllPos);
 
+//approve PO
+routes.put('/approve',poController.approvePo)
+
+//Rejected
+routes.put('/reject',poController.rejectPo)
+
 module.exports = routes;
