@@ -4,7 +4,6 @@ const PurchaseRequest = require("../models/PurchaseRequest");
 const Material = require("../../materials/models/MaterialSchema");
 const MaterialType = require("../../materials/models/MaterialTypeSchema");
 const MaterialRequirement = require("../models/MaterialRequirement");
-const { rawListeners } = require("../models/PurchaseRequest");
 
 exports.checkPrExists = (req, res, next) => {
   const prid = "PR" + Math.floor(Math.random() * 50000);
