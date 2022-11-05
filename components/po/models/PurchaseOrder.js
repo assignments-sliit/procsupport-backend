@@ -2,13 +2,13 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema;
 
-const PurchaseRequestSchema = new Schema({
+const PurchaseOrderSchema = new Schema({
     _id:mongoose.Types.ObjectId,
-    prid:{
+    poid:{
         type:String,
         required:true,
     },
-    prName:{
+    supplierId:{
         type:String,
         required:true,
     },
@@ -33,19 +33,19 @@ const PurchaseRequestSchema = new Schema({
     },
     status:{
         type:String,
-        enum:['NEW','APPROVED','PENDING','DECLINED'],
+        enum:['APPROVED','PENDING','DECLINED'],
         required:true,
-        default:'NEW'
+        default:'PENDING'
     },
     createdBy:{
         type:mongoose.Types.ObjectId,
         ref:'Users',
         required:true
     },
-    materialRequirement:{
-        type:[mongoose.Types.ObjectId],
-        ref:'Material Requirement'
+    prNo:{
+        type:String,
+        required:true
     }
 })
 
-module.exports = mongoose.model("Purchase Request", PurchaseRequestSchema)
+module.exports = mongoose.model("Purchase Order", PurchaseOrderSchema)
