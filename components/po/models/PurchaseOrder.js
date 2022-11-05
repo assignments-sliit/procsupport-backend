@@ -19,7 +19,6 @@ const PurchaseOrderSchema = new Schema({
     amount:{
         type:Number,
         required:true,
-        default:0
     },
     createdOn:{
         type:Date,
@@ -42,7 +41,7 @@ const PurchaseOrderSchema = new Schema({
         ref:'Users',
         required:true
     },
-    prNo:{
+    prid:{
         type:String,
         required:true
     }
