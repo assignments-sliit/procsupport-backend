@@ -4,7 +4,6 @@ const PurchaseRequest = require("../models/PurchaseRequest");
 const Material = require("../../materials/models/MaterialSchema");
 const MaterialType = require("../../materials/models/MaterialTypeSchema");
 const MaterialRequirement = require("../models/MaterialRequirement");
-const { rawListeners } = require("../models/PurchaseRequest");
 
 exports.checkPrExists = (req, res, next) => {
   const prid = "PR" + Math.floor(Math.random() * 50000);
@@ -28,6 +27,8 @@ exports.checkPrExists = (req, res, next) => {
 exports.checkUserAndAccess = (req, res, next) => {
   const token = req.body.token;
 
+  let usertype ="";
+
   if (token) {
     const json = JSON.parse(
       Buffer.from(token.split(".")[1], "base64").toString()
@@ -38,15 +39,20 @@ exports.checkUserAndAccess = (req, res, next) => {
         req.body.createdBy = entry[1].toString();
       }
 
-      if (entry[0] == "usertype" && entry[1] == "REQUESTOR") {
-        next();
-      }else{
-        res.status(409).json({
-          error:"Access Denied",
-          code:"ACCESS_DENIED"
-        })
+      if (entry[0] == "usertype") {
+        usertype = entry[1].toString();
       }
     });
+
+    if(usertype && usertype == "REQUESTOR"){
+      next();
+    }else{
+      res.status(409).json({
+        error:"Access Denied",
+        code:"ACCESS_DENIED"
+      });
+    }
+    
   }
   //cannot find token
   else{
