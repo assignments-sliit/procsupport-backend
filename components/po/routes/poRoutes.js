@@ -13,12 +13,18 @@ routes.post(
 );
 
 //all POs
-routes.get("/all", poController.fetchAllPos);
+routes.get("/get/all", poController.fetchAllPos);
 
 //approve PO
 routes.put('/approve',poController.approvePo)
 
 //Rejected
 routes.put('/reject',poController.rejectPo)
+
+routes.get('/get/approved',poController.fetchAllApprovedPos)
+
+routes.get('/get/pending', poController.fetchAllPendingPos)
+
+routes.get('/get/rejected',poController.fetchAllRejectedPos)
 
 module.exports = routes;

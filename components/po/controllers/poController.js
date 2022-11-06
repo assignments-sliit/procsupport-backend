@@ -113,7 +113,7 @@ exports.fetchAllPos = (req, res, next) => {
   PurchaseOrder.find()
     .exec()
     .then((allPos) => {
-      if (allPos) {
+      if (allPos.length > 0) {
         res.status(200).json({
           message: "All Purchase Orders",
           code: "ALL_PURCHASE_ORDERS",
@@ -128,7 +128,7 @@ exports.fetchAllPos = (req, res, next) => {
     });
 };
 
-exports.approvePo = (req,res,next)=>{
+exports.approvePo = (req, res, next) => {
   const token = req.body.token;
 
   let usertype = "";
@@ -177,9 +177,9 @@ exports.approvePo = (req,res,next)=>{
       code: "AUTH_TOKEN_NOT_FOUND",
     });
   }
-}
+};
 
-exports.rejectPo = (req,res,next)=>{
+exports.rejectPo = (req, res, next) => {
   const token = req.body.token;
 
   let usertype = "";
@@ -228,4 +228,68 @@ exports.rejectPo = (req,res,next)=>{
       code: "AUTH_TOKEN_NOT_FOUND",
     });
   }
-}
+};
+
+exports.fetchAllApprovedPos = (req, res, next) => {
+  PurchaseOrder.find({
+    status: "APPROVED",
+  })
+    .exec()
+    .then((allapprovedPo) => {
+      if (allapprovedPo.length > 0) {
+        res.status(200).json({
+          message: "All Approved Purchase Orders",
+          code: "ALL_APPROVED_PURCHASE_ORDERS",
+          response: allapprovedPo,
+        });
+      } else {
+        res.status(404).json({
+          error: "No Approved Purchase Orders",
+          code: "NO_APPROVED_PURCHASE_ORDERS",
+        });
+      }
+    });
+};
+
+exports.fetchAllPendingPos = (req, res, next) => {
+  PurchaseOrder.find({
+    status: "PENDING",
+  })
+    .exec()
+    .then((allpendingPo) => {
+      if (allpendingPo.length > 0) {
+        res.status(200).json({
+          message: "All Pending Purchase Orders",
+          code: "ALL_PENDING_PURCHASE_ORDERS",
+          response: allpendingPo,
+        });
+      } else {
+        res.status(404).json({
+          error: "No Pending Purchase Orders",
+          code: "NO_PENDING_PURCHASE_ORDERS",
+        });
+      }
+    });
+};
+
+exports.fetchAllRejectedPos = (req, res, next) => {
+  PurchaseOrder.find({
+    status: "REJECTED",
+  })
+    .exec()
+    .then((allRejectedPo) => {
+      if (allRejectedPo.length > 0) {
+        res.status(200).json({
+          message: "All REJECTED Purchase Orders",
+          code: "ALL_REJECTED_PURCHASE_ORDERS",
+          response: allRejectedPo,
+        });
+      } else {
+        res.status(404).json({
+          error: "No Rejected Purchase Orders",
+          code: "NO_REJECTED_PURCHASE_ORDERS",
+        });
+      }
+    });
+};
+
