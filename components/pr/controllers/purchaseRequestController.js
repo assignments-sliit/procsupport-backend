@@ -27,7 +27,7 @@ exports.checkPrExists = (req, res, next) => {
 exports.checkUserAndAccess = (req, res, next) => {
   const token = req.body.token;
 
-  let usertype ="";
+  let usertype = "";
 
   if (token) {
     const json = JSON.parse(
@@ -44,22 +44,21 @@ exports.checkUserAndAccess = (req, res, next) => {
       }
     });
 
-    if(usertype && usertype == "REQUESTOR"){
+    if (usertype && usertype == "REQUESTOR") {
       next();
-    }else{
+    } else {
       res.status(409).json({
-        error:"Access Denied",
-        code:"ACCESS_DENIED"
+        error: "Access Denied",
+        code: "ACCESS_DENIED",
       });
     }
-    
   }
   //cannot find token
-  else{
+  else {
     res.status(409).json({
-      error:"Cannot find auth token",
-      code:"AUTH_TOKEN_NOT_FOUND"
-    })
+      error: "Cannot find auth token",
+      code: "AUTH_TOKEN_NOT_FOUND",
+    });
   }
 };
 
@@ -111,7 +110,7 @@ exports.checkMaterial = (req, res, next) => {
     });
 };
 
-exports.checkMaterialType = (req, res,next) => {
+exports.checkMaterialType = (req, res, next) => {
   const materialType = req.body.materialTypeId;
 
   MaterialType.findOne({
@@ -131,24 +130,26 @@ exports.checkMaterialType = (req, res,next) => {
     });
 };
 
-exports.addMaterialRequirement = (req, res,next) => {
+exports.addMaterialRequirement = (req, res, next) => {
   const reqid = "MAR" + +Math.floor(Math.random() * 50000);
   req.body.reqid = reqid;
 
-  const _id = mongoose.Types.ObjectId()
+  const _id = mongoose.Types.ObjectId();
   req.body._id = _id;
 
   const materialRequirement = new MaterialRequirement(req.body);
 
   materialRequirement.save().then((createdMr) => {
     res.status(201).json({
-       createdMr: createdMr
-    })
+      createdMr: createdMr,
+    });
   });
 };
 
-exports.approvePr = (req,res,next)=>{
+exports.approvePr = (req, res, next) => {
   const token = req.body.token;
+
+  let usertype = "";
 
   if (token) {
     const json = JSON.parse(
@@ -156,31 +157,43 @@ exports.approvePr = (req,res,next)=>{
     );
 
     Object.entries(json).map((entry) => {
-      if (entry[0] == "id") {
-        req.body.createdBy = entry[1].toString();
-      }
-
-      if (entry[0] == "usertype" && entry[1] == "APPROVER") {
-        PurchaseRequest.findOneAndUpdate({
-          status:"APPROVED"
-        }).exec().then((approvedPr)=>{
-          
-        })
-      }else{
-        res.status(409).json({
-          error:"Access Denied",
-          code:"ACCESS_DENIED"
-        })
+  
+      if (entry[0] == "usertype") {
+        usertype = entry[1].toString();
       }
     });
+
+    if (usertype && usertype == "APPROVER") {
+      PurchaseRequest.findOneAndUpdate(
+        {
+          prid: req.body.prid,
+        },
+        {
+          status: "APPROVED",
+        }
+      )
+        .exec()
+        .then(() => {
+          PurchaseRequest.findOne({
+            prid: req.body.prid,
+          }).then((approvedPr) => {
+            res.status(200).json({
+              approvedPr: approvedPr,
+            });
+          });
+        });
+    } else {
+      res.status(409).json({
+        error: "Access Denied",
+        code: "ACCESS_DENIED",
+      });
+    }
   }
   //cannot find token
-  else{
+  else {
     res.status(409).json({
-      error:"Cannot find auth token",
-      code:"AUTH_TOKEN_NOT_FOUND"
-    })
+      error: "Cannot find auth token",
+      code: "AUTH_TOKEN_NOT_FOUND",
+    });
   }
-
-}
-
+};
