@@ -13,4 +13,12 @@ routes.post(
 
 routes.put("/status/approve",prController.approvePr)
 
+routes.get("/get/all",prController.fetchAllPr)
+
+routes.get("/get/auth/all",prController.fetchAllPrWithAuth)
+
+routes.get("/get/pr/:prid",prController.fetchPrByPrId)
+
+routes.get("/get/auth/pr/:prid",prController.fetchPrByPrIdWithAuth)
+
 module.exports = routes;
