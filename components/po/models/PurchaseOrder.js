@@ -32,7 +32,7 @@ const PurchaseOrderSchema = new Schema({
     },
     status:{
         type:String,
-        enum:['APPROVED','PENDING','DECLINED'],
+        enum:['APPROVED','PENDING','DECLINED','INVOICED'],
         required:true,
         default:'PENDING'
     },

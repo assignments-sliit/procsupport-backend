@@ -16,15 +16,22 @@ routes.post(
 routes.get("/get/all", poController.fetchAllPos);
 
 //approve PO
-routes.put('/approve',poController.approvePo)
+routes.put("/approve", poController.approvePo);
 
 //Rejected
-routes.put('/reject',poController.rejectPo)
+routes.put("/reject", poController.rejectPo);
 
-routes.get('/get/approved',poController.fetchAllApprovedPos)
+routes.get("/get/approved", poController.fetchAllApprovedPos);
 
-routes.get('/get/pending', poController.fetchAllPendingPos)
+routes.get("/get/pending", poController.fetchAllPendingPos);
 
-routes.get('/get/rejected',poController.fetchAllRejectedPos)
+routes.get("/get/rejected", poController.fetchAllRejectedPos);
+
+routes.put(
+  "/invoice",
+  poController.checkBudgetBeforePoInvoice,
+  poController.invoicePo,
+  poController.deductBudgetAfterInvoicePo
+);
 
 module.exports = routes;
