@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const PurchaseOrder = require("../models/PurchaseOrder");
 const PurchaseRequest = require("../../pr/models/PurchaseRequest");
 
+const Budget = require("../../budget/models/Budget");
+
 exports.checkPoExists = (req, res, next) => {
   const poid = "PO" + Math.floor(Math.random() * 50000);
   PurchaseOrder.findOne({
@@ -232,6 +234,127 @@ exports.rejectPo = (req, res, next) => {
   }
 };
 
+//check budget
+exports.checkBudgetBeforePoInvoice = (req, res, next) => {
+  let budget = 0;
+  Budget.find()
+    .exec()
+    .then((allBudgetObjects) => {
+      if (allBudgetObjects.length > 0) {
+        allBudgetObjects.map((singleObject) => {
+          budget = budget + parseInt(singleObject.amount);
+        });
+
+        PurchaseOrder.findOne({
+          poid: req.body.poid,
+        }).then((po) => {
+          if (po) {
+            if (po.amount > budget) {
+              res.status(500).json({
+                error: "Insufficient Budget to Invoice this Purchase Order",
+                code: "INSUFFICIENT_BUDGET_FOR_PO",
+              });
+            } else {
+              next();
+            }
+          } else {
+            res.status(404).json({
+              error: "No Purchase Orders found",
+              code: "NO_PURCHASE_ORDERS_FOUND",
+            });
+          }
+        });
+      }
+    });
+};
+
+exports.invoicePo = (req, res, next) => {
+  const token = req.body.token;
+
+  let usertype = "";
+
+  if (token) {
+    const json = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString()
+    );
+
+    Object.entries(json).map((entry) => {
+      if (entry[0] == "usertype") {
+        usertype = entry[1].toString();
+      }
+    });
+
+    if (usertype && usertype == "PURCHASER") {
+      PurchaseOrder.findOneAndUpdate(
+        {
+          poid: req.body.poid,
+        },
+        {
+          status: "INVOICED",
+        }
+      )
+        .exec()
+        .then((po) => {
+          req.body.amount = po.amount;
+          next();
+        });
+    } else {
+      res.status(409).json({
+        error: "Access Denied",
+        code: "ACCESS_DENIED",
+      });
+    }
+  }
+  //cannot find token
+  else {
+    res.status(409).json({
+      error: "Cannot find auth token",
+      code: "AUTH_TOKEN_NOT_FOUND",
+    });
+  }
+};
+
+exports.deductBudgetAfterInvoicePo = (req, res, next) => {
+  let budget = 0;
+  Budget.find()
+    .exec()
+    .then((allBudgetObjects) => {
+      if (allBudgetObjects.length > 0) {
+        allBudgetObjects.map((singleObject) => {
+          budget = budget + parseInt(singleObject.amount);
+        });
+
+        if (budget > 0) {
+          budget = budget - req.body.amount;
+        }
+
+        Budget.findOneAndUpdate(
+          {
+            budgetName: "GENERAL",
+          },
+          {
+            amount: budget,
+          }
+        ).then(() => {
+          PurchaseOrder.findOne({
+            poid: req.body.poid,
+          }).then((invoicedPo) => {
+            
+             res.status(200).json({
+              invoicedPo: invoicedPo,
+            });
+          });
+        });
+
+        // res.status(200).json({
+        //   amount: budget,
+        //   currency: "LKR",
+        //   code: "ENTIRE_BUDGET",
+        // });
+      }
+    });
+};
+
 exports.fetchAllApprovedPos = (req, res, next) => {
   PurchaseOrder.find({
     status: "APPROVED",
@@ -294,4 +417,3 @@ exports.fetchAllRejectedPos = (req, res, next) => {
       }
     });
 };
-
