@@ -197,6 +197,57 @@ exports.approvePr = (req, res, next) => {
   }
 };
 
+exports.declinePr = (req, res, next) => {
+  const token = req.body.token;
+
+  let usertype = "";
+
+  if (token) {
+    const json = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString()
+    );
+
+    Object.entries(json).map((entry) => {
+      if (entry[0] == "usertype") {
+        usertype = entry[1].toString();
+      }
+    });
+
+    if (usertype && usertype == "APPROVER") {
+      PurchaseRequest.findOneAndUpdate(
+        {
+          prid: req.body.prid,
+        },
+        {
+          status: "DECLINED",
+        }
+      )
+        .exec()
+        .then(() => {
+          PurchaseRequest.findOne({
+            prid: req.body.prid,
+          }).then((declinedPr) => {
+            res.status(200).json({
+              declinedPr: declinedPr,
+            });
+          });
+        });
+    } else {
+      res.status(409).json({
+        error: "Access Denied",
+        code: "ACCESS_DENIED",
+      });
+    }
+  }
+  //cannot find token
+  else {
+    res.status(409).json({
+      error: "Cannot find auth token",
+      code: "AUTH_TOKEN_NOT_FOUND",
+    });
+  }
+};
+
 exports.fetchAllPr = (req, res, next) => {
   PurchaseRequest.find()
     .exec()
