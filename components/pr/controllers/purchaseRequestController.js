@@ -273,12 +273,20 @@ exports.fetchAllPr = (req, res, next) => {
 };
 
 exports.fetchAllPrWithAuth = (req, res, next) => {
-  const token = req.body.token;
+  const header = req.headers["authorization"];
+
+  if (typeof header !== "undefined") {
+    const bearer = header.split(" ");
+
+    const token = bearer[1];
+    console.log(token);
+    req.token = token;
+  }
   let _id;
 
-  if (token) {
+  if (req.token) {
     const json = JSON.parse(
-      Buffer.from(token.split(".")[1], "base64").toString()
+      Buffer.from(req.token.split(".")[1], "base64").toString()
     );
 
     Object.entries(json).map((entry) => {
@@ -331,13 +339,21 @@ exports.fetchPrByPrId = (req, res, next) => {
 };
 
 exports.fetchPrByPrIdWithAuth = (req, res, next) => {
-  const token = req.body.token;
+  const header = req.headers["authorization"];
+
+  if (typeof header !== "undefined") {
+    const bearer = header.split(" ");
+
+    const token = bearer[1];
+    console.log(token);
+    req.token = token;
+  }
 
   let _id;
 
-  if (token) {
+  if (req.token) {
     const json = JSON.parse(
-      Buffer.from(token.split(".")[1], "base64").toString()
+      Buffer.from(req.token.split(".")[1], "base64").toString()
     );
 
     Object.entries(json).map((entry) => {
