@@ -157,7 +157,6 @@ exports.approvePr = (req, res, next) => {
     );
 
     Object.entries(json).map((entry) => {
-  
       if (entry[0] == "usertype") {
         usertype = entry[1].toString();
       }
@@ -195,5 +194,125 @@ exports.approvePr = (req, res, next) => {
       error: "Cannot find auth token",
       code: "AUTH_TOKEN_NOT_FOUND",
     });
+  }
+};
+
+exports.fetchAllPr = (req, res, next) => {
+  PurchaseRequest.find()
+    .exec()
+    .then((allPrs) => {
+      if (allPrs.length < 0) {
+        res.status(404).json({
+          error: "No Purchase Request exists",
+          code: "NO_PR_EXISTS",
+        });
+      } else {
+        res.status(200).json({
+          purchase_requests: allPrs,
+          code: "PR_FOUND",
+        });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({
+        error: error,
+        code: "UNKNOWN_SERVER_ERROR",
+      });
+    });
+};
+
+exports.fetchAllPrWithAuth = (req, res, next) => {
+  const token = req.body.token;
+  let _id;
+
+  if (token) {
+    const json = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString()
+    );
+
+    Object.entries(json).map((entry) => {
+      if (entry[0] == "id") {
+        _id = entry[1];
+      }
+    });
+
+    PurchaseRequest.find({ createdBy: mongoose.Types.ObjectId(_id) })
+      .exec()
+      .then((allPrs) => {
+        if (allPrs.length < 0) {
+          res.status(404).json({
+            error: "No Purchase Requests exist",
+            code: "NO_PR_EXISTS",
+          });
+        } else {
+          res.status(200).json({
+            purchase_requests: allPrs,
+            code: "PR_FOUND",
+          });
+        }
+      })
+      .catch((error) => {
+        res.status(500).json({
+          error: error,
+          code: "UNKNOWN_SERVER_ERROR",
+        });
+      });
+  }
+};
+exports.fetchPrByPrId = (req, res, next) => {
+  PurchaseRequest.findOne({
+    prid: req.params.prid,
+  })
+    .exec()
+    .then((singlePr) => {
+      if (singlePr) {
+        res.status(200).json({
+          purchase_request: singlePr,
+          code: "SINGLE_PR_FOUND",
+        });
+      } else {
+        res.status(404).json({
+          error: "Purchase Request does not exist",
+          code: "NO_PR_EXISTS",
+        });
+      }
+    });
+};
+
+exports.fetchPrByPrIdWithAuth = (req, res, next) => {
+  const token = req.body.token;
+
+  let _id;
+
+  if (token) {
+    const json = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString()
+    );
+
+    Object.entries(json).map((entry) => {
+      if (entry[0] == "id") {
+        _id = entry[1];
+      }
+    });
+
+    PurchaseRequest.findOne({
+      prid: req.params.prid,
+      createdBy: mongoose.Types.ObjectId(_id),
+    })
+      .exec()
+      .then((singlePr) => {
+        if (singlePr) {
+          console.log(singlePr);
+          res.status(200).json({
+            purchase_request: singlePr,
+            code: "SINGLE_PR_FOUND",
+          });
+        } else {
+          res.status(404).json({
+            error: "Purchase Request does not exist",
+            code: "NO_PR_EXISTS",
+          });
+        }
+      });
   }
 };
