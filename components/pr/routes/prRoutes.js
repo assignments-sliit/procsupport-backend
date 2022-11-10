@@ -13,6 +13,8 @@ routes.post(
 
 routes.put("/status/approve",prController.approvePr)
 
+routes.put("/status/decline",prController.declinePr)
+
 routes.get("/get/all",prController.fetchAllPr)
 
 routes.get("/get/auth/all",prController.fetchAllPrWithAuth)
