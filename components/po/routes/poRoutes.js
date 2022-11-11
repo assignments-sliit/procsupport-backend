@@ -27,6 +27,10 @@ routes.get("/get/pending", poController.fetchAllPendingPos);
 
 routes.get("/get/rejected", poController.fetchAllRejectedPos);
 
+routes.get("/get/invoiced", poController.fetchAllInvoicedPos);
+
+routes.get("/get/delivered", poController.fetchAllDeliveredPos);
+
 routes.put(
   "/invoice",
   poController.checkBudgetBeforePoInvoice,
