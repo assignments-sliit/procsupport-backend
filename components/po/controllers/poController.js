@@ -417,3 +417,46 @@ exports.fetchAllRejectedPos = (req, res, next) => {
       }
     });
 };
+
+exports.fetchAllInvoicedPos = (req, res, next) => {
+  PurchaseOrder.find({
+    status: "INVOICED",
+  })
+    .exec()
+    .then((invoicedPo) => {
+      if (invoicedPo.length > 0) {
+        res.status(200).json({
+          message: "All Invoiced Purchase Orders",
+          code: "ALL_INVOICED_PURCHASE_ORDERS",
+          response: invoicedPo,
+        });
+      } else {
+        res.status(404).json({
+          error: "No Invoiced Purchase Orders",
+          code: "NO_INVOICED_PURCHASE_ORDERS",
+        });
+      }
+    });
+};
+
+
+exports.fetchAllDeliveredPos = (req, res, next) => {
+  PurchaseOrder.find({
+    status: "DELIVERED",
+  })
+    .exec()
+    .then((deliveredPo) => {
+      if (deliveredPo.length > 0) {
+        res.status(200).json({
+          message: "All Delivered Purchase Orders",
+          code: "ALL_DELIVERED_PURCHASE_ORDERS",
+          response: deliveredPo,
+        });
+      } else {
+        res.status(404).json({
+          error: "No Delivered Purchase Orders",
+          code: "NO_DELIVERED_PURCHASE_ORDERS",
+        });
+      }
+    });
+};

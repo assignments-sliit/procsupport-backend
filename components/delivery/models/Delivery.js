@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema;
 
-const PurchaseOrderSchema = new Schema({
+const DeliverySchema = new Schema({
     _id:mongoose.Types.ObjectId,
-    poid:{
+    deliveryId:{
         type:String,
         required:true,
     },
@@ -12,13 +12,9 @@ const PurchaseOrderSchema = new Schema({
         type:String,
         required:true,
     },
-    description:{
-        type:String,
-        required:true,
-    },
     amount:{
         type:Number,
-        required:true,
+       required:true,
     },
     createdOn:{
         type:Date,
@@ -32,19 +28,31 @@ const PurchaseOrderSchema = new Schema({
     },
     status:{
         type:String,
-        enum:['APPROVED','PENDING','DECLINED','INVOICED','DELIVERED'],
+        enum:['STARTED','ENROUTE','CANCELLED','DELIVERED'],
         required:true,
-        default:'PENDING'
+        default:'STARTED'
     },
     createdBy:{
         type:mongoose.Types.ObjectId,
         ref:'Users',
         required:true
     },
-    prid:{
+    poid:{
+        type:String,
+        required:true
+    },
+    paymentMethod:{
+        type:String,
+        required:true
+    },
+    paymentStatus:{
+        type:String,
+        required:true
+    },
+    contactNo:{
         type:String,
         required:true
     }
 })
 
-module.exports = mongoose.model("Purchase Order", PurchaseOrderSchema)
+module.exports = mongoose.model("Delivery", DeliverySchema)

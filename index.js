@@ -15,6 +15,7 @@ const prRoutes = require("./components/pr/routes/prRoutes")
 const mtRoutes = require("./components/materials/routes/materialTypeRoutes")
 const mrRoutes = require('./components/pr/routes/mrRoutes')
 const poRoutes = require("./components/po/routes/poRoutes")
+const deliveryRoute = require("./components/delivery/routes/deliveryRoute")
 
 app.use(cors());
 app.use(express.json());
@@ -43,6 +44,7 @@ app.use("/api/pr",prRoutes)
 app.use('/api/mr',mrRoutes)
 app.use("/api/mt",mtRoutes)
 app.use("/api/po",poRoutes)
+app.use("/api/delivery",deliveryRoute)
 
 app.listen(PORT, () => {
   console.log(`Backend server has started on port ${PORT}`);
