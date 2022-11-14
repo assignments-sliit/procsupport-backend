@@ -4,7 +4,8 @@
   "description": "ProcSupport - Procurement System Developed for ESAD module for SLIIT MSc.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "server": "nodemon server.js"
   },
   "keywords": [
     "procurement",
