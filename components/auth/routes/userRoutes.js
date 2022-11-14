@@ -10,7 +10,7 @@ routes.post("/create",userController.createUser)
 routes.get('/find/username/:username',userController.getUserByUsername)
 
 //routes.get('/login')
-routes.get('/login',userController.login)
+routes.post('/login',userController.login)
 
 //get user type 
 routes.get('/get/type/:username',userController.getUserType)

@@ -117,7 +117,10 @@ exports.login = (req, res) => {
 
             return res.status(200).json({
               message: "Authorization Success",
-              token: token,
+              data:{
+                token: token,
+                usertype: foundUser.usertype,
+              },
               code: "AUTH_SUCCESS",
             });
           }
