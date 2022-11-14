@@ -231,7 +231,6 @@ exports.fetchAllStartedDeliveryOrders = (req, res, next) => {
     });
 };
 
-
 exports.fetchAllEnRouteDeliveryOrders = (req, res, next) => {
   Delivery.find({
     status: "ENROUTE",
@@ -274,7 +273,6 @@ exports.fetchAllCancelledDeliveryOrders = (req, res, next) => {
     });
 };
 
-
 exports.fetchAllCompletedDeliveryOrders = (req, res, next) => {
   Delivery.find({
     status: "DELIVERED",
@@ -296,7 +294,7 @@ exports.fetchAllCompletedDeliveryOrders = (req, res, next) => {
     });
 };
 
-exports.fetchOneDelivery = (req,res,next)=>{
+exports.fetchOneDelivery = (req, res, next) => {
   Delivery.findOne({
     deliveryId: req.params.deliveryId,
   })
@@ -313,5 +311,32 @@ exports.fetchOneDelivery = (req,res,next)=>{
           code: "NO_DELIVERY_ORDER_EXISTS",
         });
       }
+    });
+};
+
+exports.fetchAllDeliveryOrders = (req, res, next) => {
+  Delivery.find()
+    .exec()
+    .then((allDeliveryOrders) => {
+
+      if (allDeliveryOrders.length < 1) {
+        res.status(404).json({
+          error: "No Delivery Orders found",
+          code: "NO_DELIVERY_ORDERS",
+        });
+      } else {
+        res.status(200).json({
+          message: "All Delivery Orders",
+          code: "ALL_DELIVERY_ORDERS",
+          response: allDeliveryOrders,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Unknown server error",
+        code: "UNKNOWN_ERROR",
+        error: err,
+      });
     });
 };

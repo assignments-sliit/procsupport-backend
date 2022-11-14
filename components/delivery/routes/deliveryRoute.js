@@ -26,4 +26,6 @@ routes.get('/get/all/cancelled',delController.fetchAllCancelledDeliveryOrders)
 routes.get('/get/all/completed',delController.fetchAllCompletedDeliveryOrders)
 
 routes.get('/get/delivery/:deliveryId', delController.fetchOneDelivery)
+
+routes.get('/get/all',delController.fetchAllDeliveryOrders)
 module.exports = routes;
